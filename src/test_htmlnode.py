@@ -1,5 +1,5 @@
 import unittest
-from htmlnode import HTMLNode
+from htmlnode import HTMLNode, LeafNode
 
 
 class TestHTMLNode(unittest.TestCase):
@@ -28,3 +28,18 @@ class TestHTMLNode(unittest.TestCase):
         node = HTMLNode(tag="a", value="Link", props={"href": "https://example.com"})
         expected_repr = "HTMLNode(tag=a, value=Link, children=[], props={'href': 'https://example.com'})"
         self.assertEqual(repr(node), expected_repr)
+
+    def test_leaf_node_to_html(self):
+        leaf_node = LeafNode(tag="span", value="Hello", props={"class": "my-class"})
+        expected_html = '<span class="my-class">Hello</span>'
+        self.assertEqual(leaf_node.to_html(), expected_html)
+
+    def test_leaf_node_to_html_without_props(self):
+        leaf_node = LeafNode(tag="span", value="Hello")
+        expected_html = "<span >Hello</span>"
+        self.assertEqual(leaf_node.to_html(), expected_html)
+
+    def test_leaf_node_to_html_without_tag(self):
+        leaf_node = LeafNode(tag=None, value="Hello")
+        expected_html = "Hello"
+        self.assertEqual(leaf_node.to_html(), expected_html)

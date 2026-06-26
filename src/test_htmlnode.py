@@ -1,5 +1,5 @@
 import unittest
-from htmlnode import HTMLNode, LeafNode
+from htmlnode import HTMLNode, LeafNode, ParentNode
 
 
 class TestHTMLNode(unittest.TestCase):
@@ -36,10 +36,42 @@ class TestHTMLNode(unittest.TestCase):
 
     def test_leaf_node_to_html_without_props(self):
         leaf_node = LeafNode(tag="span", value="Hello")
-        expected_html = "<span >Hello</span>"
+        expected_html = "<span>Hello</span>"
         self.assertEqual(leaf_node.to_html(), expected_html)
 
     def test_leaf_node_to_html_without_tag(self):
         leaf_node = LeafNode(tag=None, value="Hello")
         expected_html = "Hello"
         self.assertEqual(leaf_node.to_html(), expected_html)
+
+    def test_parent_node_to_html(self):
+        child1 = LeafNode(tag="span", value="Child 1")
+        child2 = LeafNode(tag="span", value="Child 2")
+        parent_node = ParentNode(
+            tag="div", children=[child1, child2], props={"class": "parent"}
+        )
+        expected_html = (
+            '<div class="parent"><span>Child 1</span><span>Child 2</span></div>'
+        )
+        self.assertEqual(parent_node.to_html(), expected_html)
+
+    def test_parent_node_to_html_without_props(self):
+        child1 = LeafNode(tag="span", value="Child 1")
+        child2 = LeafNode(tag="span", value="Child 2")
+        parent_node = ParentNode(tag="div", children=[child1, child2])
+        expected_html = "<div><span>Child 1</span><span>Child 2</span></div>"
+        self.assertEqual(parent_node.to_html(), expected_html)
+
+    def test_to_html_with_children(self):
+        child_node = LeafNode("span", "child")
+        parent_node = ParentNode("div", [child_node])
+        self.assertEqual(parent_node.to_html(), "<div><span>child</span></div>")
+
+    def test_to_html_with_grandchildren(self):
+        grandchild_node = LeafNode("b", "grandchild")
+        child_node = ParentNode("span", [grandchild_node])
+        parent_node = ParentNode("div", [child_node])
+        self.assertEqual(
+            parent_node.to_html(),
+            "<div><span><b>grandchild</b></span></div>",
+        )

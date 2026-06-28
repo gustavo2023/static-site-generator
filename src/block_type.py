@@ -20,7 +20,7 @@ def block_to_block_type(block: str) -> BlockType:
 
     def is_quote(block_text: str) -> bool:
         lines = block_text.splitlines()
-        return bool(lines) and all(re.fullmatch(r">\s?.+", line) for line in lines)
+        return bool(lines) and all(re.fullmatch(r">\s?.*", line) for line in lines)
 
     def is_unordered_list(block_text: str) -> bool:
         lines = block_text.splitlines()
